@@ -1,4 +1,4 @@
-// calc1 簡易電卓 -- コマンドライン引数、正規表現、文字列置換の例
+// 簡易電卓 -- コマンドライン引数、正規表現、文字列置換の例
 package main
 
 import (
@@ -11,10 +11,10 @@ import (
 )
 
 func main() {
-	var exp string;  // EXPression: 式
-	if n := len(os.Args); 2 <=n { // 引数があったら
-		for i:= 1; i<n; i++ {
-			exp +=  os.Args[i]  // 引数を後ろに追加していく
+	var exp string  // EXPression: 式
+	if n := len(os.Args); 2 <= n { // 引数があったら
+		for i := 1; i < n; i++ {
+			exp += os.Args[i] // 引数を後ろに追加していく
 		}
 		calculateAndPrintValue(exp) // 必要な変換を行って計算する
 	}
@@ -30,23 +30,19 @@ func main() {
 }
 
 // calculateAndPrintValue  文字の置換を行って計算し出力する
-func calculateAndPrintValue(exp string) {
+func calculateAndPrintValue(exp string) error {
 	expOrigin := exp
 	exp = replaceChars(exp) // ÷->/  全角->半角変換などを行う
 	if (exp != expOrigin) {
 		fmt.Println("次の計算をします:", exp) // 変えた時は確認のため表示
 	}
 	result, err := calculate(exp) // 計算実行。エラーが起こればerrがnilでなくなる
-	// resultはバイト列（型byteのスライス -- []byte）
-	// スライスは「可変長の配列」。Goの配列はサイズ固定だがスライスは変更可
 	if err != nil || len(result)==0 { // エラーが起こったか、結果が空の時
 		fmt.Println("計算できません")
 	} else {
-		fmt.Printf("%s", result)  // []byteでも%sを指定すれば文字列として出力可
-		//		resultString := string(result)  // 一旦文字列に変換してから
-		//		fmt.Print(resultString)   // 出力してもOK
+		fmt.Printf("%s\n", result)  
 	}
-	return
+	return err
 }
 
 // replaceChars  置換する
